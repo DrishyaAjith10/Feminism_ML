@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
+from sklearn.svm import LinearSVC
 from sklearn.metrics import classification_report
 
 # Load dataset
@@ -16,7 +16,8 @@ vectorizer = TfidfVectorizer(
     ngram_range=(1,3),
     stop_words="english",
     lowercase=True,
-    min_df=5
+    min_df=5,
+    max_df=0.9
 )
 X_vectorized = vectorizer.fit_transform(X)
 
@@ -30,10 +31,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 # Train model
-model = LogisticRegression(
-    class_weight="balanced",
-    max_iter=2000
-)
+model = LinearSVC(class_weight="balanced")
 model.fit(X_train, y_train)
 
 # Evaluate
@@ -51,7 +49,6 @@ def predict_sentence(sentence):
 
     return "Feminist" if prediction == 1 else "Not Feminist"
 
-
 while True:
     user_input = input("\nEnter a sentence (type 'exit' to quit): ")
 
@@ -61,10 +58,6 @@ while True:
 
     vec = vectorizer.transform([user_input])
     prediction = model.predict(vec)[0]
-    probability = model.predict_proba(vec)[0]
-
-    print("\nProbability Not Feminist:", round(probability[0], 3))
-    print("Probability Feminist:", round(probability[1], 3))
 
     if prediction == 1:
         print("Prediction: Feminist (Equality-aligned)")
