@@ -3,6 +3,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.svm import LinearSVC
 from sklearn.metrics import classification_report
+import joblib
 
 # Load dataset
 data = pd.read_csv("dataset.csv")
@@ -64,3 +65,8 @@ while True:
     else:
         print("Prediction: Not Feminist (Gender-biased)")
 
+
+joblib.dump(model, "model.pkl")
+joblib.dump(vectorizer, "vectorizer.pkl")
+
+print("Model saved successfully!")
